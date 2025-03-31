@@ -60,7 +60,24 @@
           label="虚拟机名称"
           min-width="120"
           show-overflow-tooltip
-        />
+        >
+          <template #header>
+            <div class="column-header">
+              <span>虚拟机名称</span>
+              <el-button
+                type="text"
+                @click="toggleSort"
+                class="sort-button"
+              >
+                <el-icon>
+                  <component
+                    :is="sortAscending ? 'ArrowUp' : 'ArrowDown'"
+                  />
+                </el-icon>
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="cpu"
           label="CPU"
@@ -113,7 +130,7 @@
             {{ formatTime(row.created_at) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="220" fixed="right">
+        <el-table-column label="操作" width="260" fixed="right">
           <template #default="{ row }">
             <el-button
               v-if="row.status === VMStatus.STOPPED"
@@ -220,6 +237,9 @@ const pagination = reactive({
   total: 0
 })
 
+// 排序状态
+const sortAscending = ref(true)
+
 // 获取状态标签
 const getStatusLabel = (status) => {
   const statusMap = {
@@ -229,7 +249,8 @@ const getStatusLabel = (status) => {
     [VMStatus.STARTING]: '启动中',
     [VMStatus.STOPPING]: '停止中',
     [VMStatus.FAILED]: '失败',
-    [VMStatus.DELETED]: '已删除'
+    [VMStatus.DELETED]: '已删除',
+    [VMStatus.MARKEDFORDELETED]: '标记删除'
   }
   return statusMap[status] || status
 }
@@ -263,6 +284,8 @@ const fetchVMList = async () => {
     // 构建查询参数
     const params = {
       page: pagination.page,
+      sort_by: 'name',
+      ascending: sortAscending.value,
       limit: pagination.limit,
       ...searchForm
     }
@@ -309,6 +332,13 @@ const handleSizeChange = (val) => {
 // 页码变化
 const handleCurrentChange = (val) => {
   pagination.page = val
+  fetchVMList()
+}
+
+// 切换排序方向
+const toggleSort = () => {
+  debugger
+  sortAscending.value = !sortAscending.value
   fetchVMList()
 }
 
@@ -436,5 +466,16 @@ onMounted(() => {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sort-button {
+  padding: 0;
+  height: auto;
 }
 </style>

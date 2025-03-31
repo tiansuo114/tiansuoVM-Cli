@@ -107,39 +107,83 @@ export function enableUser(uid) {
 }
 
 /**
- * 获取操作日志列表
+ * 获取审计日志列表
  * @param {Object} params - 查询参数
  * @param {number} [params.page] - 页码
- * @param {number} [params.limit] - 每页数量
+ * @param {number} [params.page_size] - 每页数量
  * @param {string} [params.username] - 用户名
- * @param {string} [params.action] - 操作类型
- * @param {number} [params.start_time] - 开始时间戳
- * @param {number} [params.end_time] - 结束时间戳
- * @returns {Promise<Object>} - 日志列表和总数
+ * @param {string} [params.ip] - IP地址
+ * @param {string} [params.operation] - 操作类型
+ * @param {number} [params.start_time] - 开始时间
+ * @param {number} [params.end_time] - 结束时间
+ * @param {Array<number>} [params.status] - 状态列表
+ * @returns {Promise<Object>} - 审计日志列表和总数
  */
-export function getLogList(params) {
+export function getAuditLogs(params) {
   return request({
-    url: '/api/v1/admin/logs',
+    url: '/api/v1/logs/audit',
     method: 'get',
     params
   })
 }
 
 /**
- * 获取审核日志列表
+ * 获取事件日志列表
  * @param {Object} params - 查询参数
  * @param {number} [params.page] - 页码
- * @param {number} [params.limit] - 每页数量
- * @param {string} [params.username] - 用户名
- * @param {string} [params.status] - 状态
- * @param {number} [params.start_time] - 开始时间戳
- * @param {number} [params.end_time] - 结束时间戳
- * @returns {Promise<Object>} - 日志列表和总数
+ * @param {number} [params.page_size] - 每页数量
+ * @param {string} [params.event_type] - 事件类型
+ * @param {string} [params.creator] - 创建者
+ * @param {number} [params.start_time] - 开始时间
+ * @param {number} [params.end_time] - 结束时间
+ * @returns {Promise<Object>} - 事件日志列表和总数
  */
-export function getAuditLogList(params) {
+export function getEventLogs(params) {
   return request({
-    url: '/api/v1/admin/audit-logs',
+    url: '/api/v1/logs/events',
     method: 'get',
     params
+  })
+}
+
+/**
+ * 获取单个事件日志详情
+ * @param {number} id - 事件日志ID
+ * @returns {Promise<Object>} - 事件日志详情
+ */
+export function getEventLog(id) {
+  return request({
+    url: `/api/v1/logs/events/${id}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 获取用户操作日志列表
+ * @param {Object} params - 查询参数
+ * @param {number} [params.page] - 页码
+ * @param {number} [params.page_size] - 每页数量
+ * @param {string} [params.uid] - 用户ID
+ * @param {number} [params.start_time] - 开始时间
+ * @param {number} [params.end_time] - 结束时间
+ * @returns {Promise<Object>} - 用户操作日志列表和总数
+ */
+export function getUserOperationLogs(params) {
+  return request({
+    url: '/api/v1/logs/user-operations',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 获取指定用户的操作日志
+ * @param {string} uid - 用户ID
+ * @returns {Promise<Object>} - 用户操作日志列表
+ */
+export function getUserOperationLogsByUid(uid) {
+  return request({
+    url: `/api/v1/logs/user-operations/user/${uid}`,
+    method: 'get'
   })
 }

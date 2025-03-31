@@ -58,7 +58,22 @@
           label="显示名称"
           min-width="150"
           show-overflow-tooltip
-        />
+        >
+          <template #header>
+            <div class="column-header">
+              <span>显示名称</span>
+              <el-button
+                type="text"
+                @click="toggleSort"
+                class="sort-button"
+              >
+                <el-icon>
+                  <component :is="sortAscending ? 'ArrowUp' : 'ArrowDown'" />
+                </el-icon>
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="name"
           label="镜像名称"
@@ -422,6 +437,15 @@ const formatTime = (timestamp) => {
   return date.toLocaleString()
 }
 
+// 在 script setup 部分添加
+const sortAscending = ref(true)
+
+// 切换排序方向
+const toggleSort = () => {
+  sortAscending.value = !sortAscending.value
+  fetchImageList()
+}
+
 // 获取镜像列表
 const fetchImageList = async () => {
   try {
@@ -430,6 +454,8 @@ const fetchImageList = async () => {
     // 构建查询参数
     const params = {
       page: pagination.page,
+      sort_by: 'display_name',
+      ascending: sortAscending.value,
       limit: pagination.limit,
       ...searchForm
     }
@@ -600,5 +626,16 @@ onMounted(() => {
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sort-button {
+  padding: 0;
+  height: auto;
 }
 </style>

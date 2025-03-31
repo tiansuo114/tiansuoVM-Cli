@@ -10,7 +10,8 @@ export const VMStatus = {
   STARTING: 'starting', // 启动中
   STOPPING: 'stopping', // 停止中
   FAILED: 'failed', // 失败
-  DELETED: 'deleted' // 已删除
+  DELETED: 'deleted', // 已删除
+  MARKEDFORDELETED: 'marked_for_deletion'
 }
 
 /**
